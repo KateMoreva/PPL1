@@ -28,7 +28,7 @@ void printNear(int I,int R,char* str)
 /* п р е д е л ь н ы е    */
 /* размеры:               */
 #define MAXNISXTXT 50                             /* - исходного текста;    */
-#define NSINT     301                             /* - табл.синтакс.правил; */
+#define NSINT     207                             /* - табл.синтакс.правил; */
 #define NCEL       20                             /* - стека целей;         */
 #define NDST      500                             /* - стека достижений;    */
 #define NVXOD      56                             /* - табл.входов;         */
@@ -82,7 +82,7 @@ union                                             /*шаблон для гене
         char PROB1;
         char OPERAC  [5];
         char PROB2;
-        char OPERAND [1];
+        char OPERAND [12];
         char PROB3;
         char COMM    [52];
     } _BUFCARD;
@@ -242,16 +242,18 @@ struct
     { /*.   73     .*/ 186,    72, "ODC",    0 },
     /*                                               вход с символа - E      */
     { /*.   74     .*/ 75,     0, "E  ",    0 },
-    { /*.   75     .*/ 76,    74, "N  ",   82 },
-    { /*.   76     .*/ 77,    75, "D  ",    0 },
-    { /*.   77     .*/ 78,    76, "   ",    0 },
-    { /*.   78     .*/ 79,    77, "IPR",    0 },
-    { /*.   79     .*/ 80,    78, ";  ",    0 },
-    { /*.   80     .*/ 81,    79, "OEN",    0 },
-    { /*.   81     .*/ 0,    80, "*  ",    0 },
-    
-    { /*.   82     .*/ 83,    74, "BUK",    0 },
+
+    { /*.   75    .*/ 76,    74, "BUK",    77 },
+    { /*.   76     .*/ 0,    75, "*  ",    0 },
+
+    { /*.   77     .*/ 78,    74, "N  ",   0 },
+    { /*.   78     .*/ 79,    77, "D  ",    0 },
+    { /*.   79     .*/ 80,    78, "   ",    0 },
+    { /*.   80     .*/ 81,    79, "IPR",    0 },
+    { /*.   81     .*/ 82,    80, ";  ",    0 },
+    { /*.   82     .*/ 83,    81, "OEN",    0 },
     { /*.   83     .*/ 0,    82, "*  ",    0 },
+
     /*                                               вход с символа - M      */
     { /*.   84     .*/ 85,     0, "M  ",    0 },
     { /*.   85     .*/ 86,    84, "BUK",    0 },
@@ -595,7 +597,7 @@ void compress_ISXTXT()                            /* Программа упло
 /* роль примитивного лек- */
 /* сического анализатора  */
 {
-    printf("compress\n");
+  //  printf("compress\n");
     I3 = 0;
     for ( I1 = 0 ; I1 < NISXTXT ; I1++ )
     {
@@ -690,8 +692,8 @@ void mcel ( char* T1, int T2, int T3 )            /* программа запо
     strcpy ( CEL [ K ].CEL1, T1 );
     CEL [ K ].CEL2 = T2;
     CEL [ K ].CEL3 = T3;
-    K++;
     //printf("%s\n", CEL [ K ].CEL1);
+    K++;
 }
 
 /*..........................................................................*/
@@ -703,7 +705,7 @@ void mdst ( char* T1, int T2, int T3, int T4, int T5 )
     DST [ L ].DST3 = T3;
     DST [ L ].DST4 = T4;
     DST [ L ].DST5 = T5;
-    printf("%d) %s %d %d %d %d\n", L, DST [ L ].DST1, T2, T3, T4, T5);
+   // printf("%d) %s %d %d %d %d\n", L, DST [ L ].DST1, T2, T3, T4, T5);
     L++;
 }
 
@@ -777,7 +779,7 @@ L31:
     {// Блок обработки терминала
         
         if ( STROKA [ I ] == SINT [ J ].DER [ 0 ] ) {
-            printf("T: %c\n", STROKA[ I ]);
+            //printf("T: %c\n", STROKA[ I ]);
             goto L3;
         }
         else
@@ -790,7 +792,7 @@ L4: // Блок обработки нетерминалов
     if ( SINT [ SINT [ J ].POSL ].DER [ 0 ] == '*' )
     {
         I--;
-        printf("N: %c\n", STROKA[ I ]);
+        //printf("N: %c\n", STROKA[ I ]);
         
         
         if ( !strcmp (SINT [J].DER, CEL [K-1].CEL1 ) )
@@ -917,6 +919,8 @@ char NFIL [30]="\x0";                             /* хранилище имен
 /* ставление типа long int*/
 long int VALUE ( char* s )
 {
+
+    //ТУТ ЕСТЬ ПРАВКИ
     long int S;
     unsigned long length = strlen(s);
     if (s[length - 1] == 'B') {
@@ -952,14 +956,15 @@ void FORM ()
 {
     int i,j;
     
-    for ( IFORMT = 0; IFORMT < MAXFORMT; IFORMT++ )
+    for ( IFORMT = 0; IFORMT < MAXFORMT; IFORMT++ ) {
         memcpy ( FORMT [IFORMT], "\x0\x0\x0\x0\x0\x0\x0\x0\x0", 9 );
+    }
     
     IFORMT = 0;
     j = DST [I2].DST2;
     
 FORM1:
-    
+  
     for ( i = j; i <= DST [I2].DST4+1; i++ )
     {
         if ( STROKA [i] == ':' || STROKA [i] == ' ' ||
@@ -989,11 +994,15 @@ void ZKARD ()                                     /* записи очередн
     /* ходного файла в массив */
     /* ASSTXT                 */
     char i;
+        //ТУТ ЕСТЬ ПРАВКИ не оч понятно поч все ложится если убрать вывод 
+
+   // ASSTXT[IASSTXT][79]=0;
+    //printf("%d) %s\n", IASSTXT, ASSTXT [ IASSTXT ]);
+    IASSTXT++;
     memcpy ( ASSTXT [ IASSTXT ],
             ASS_CARD.BUFCARD, 80 );
-    printf("%d) %s\n", IASSTXT, ASSTXT [ IASSTXT ]);
-    ASSTXT[IASSTXT][79]=0;
-    IASSTXT++;
+    printf("%d) %s\n", IASSTXT, ASSTXT [ IASSTXT ]); //TODO:FIX
+
     
     for ( i = 0; i < 79; i++ )
         ASS_CARD.BUFCARD [i] = ' ';
@@ -1132,7 +1141,7 @@ int ODC1 ()
         if (!strcmp(FORMT[4], "INIT") || strcmp ( FORMT [5], "INIT" )) {
 			strcpy ( SYM [ISYM].RAZR, "15" );
 		}
-        printf("B bin var \n");
+        //printf("B bin var \n");
         goto ODC11;                       /* идем на продолжение об-*/
         /* работки, а             */
     }
@@ -1155,13 +1164,13 @@ ODC11:
     if ( !strcmp(FORMT[4], "INIT")) {
         //init without range description
         strcpy ( SYM [ISYM++].INIT, FORMT [5] ); /* ем в табл. SYM это на- */
-        ISYM++;
-        printf("init without range description: %s ", FORMT[4]);
+ //       ISYM++;
+       
     } else {
         //range described before init
         /* если идентификатор     */
         /* имеет начальную иници- */
-        printf("range described before init %s ", FORMT[4]);
+    
         if ( !strcmp ( FORMT [5], "INIT" )  )     /* ализацию, то запомина- */
             strcpy ( SYM [ISYM++].INIT, FORMT [6] ); /* ем в табл. SYM это на- */
         /* чальное значение, а    */
@@ -1371,7 +1380,7 @@ int AVI2 ()
                         memcpy ( ASS_CARD._BUFCARD.OPERAC, /* а при разрядности >15  */
                                 "L", 1 ); /* формируем код ассембле-*/
                     /* ровской операции L     */
-                    
+                        //ТУТ ЕСТЬ ПРАВКИ rrab?
                     strcpy ( ASS_CARD._BUFCARD.OPERAND, /*       формируем        */
                             "@R2," );/*       первый  и        */
                     strcat ( ASS_CARD._BUFCARD.OPERAND, /* второй операнды ассемб-*/
@@ -1773,7 +1782,6 @@ int OEN2 ()
                 /*
                 //reserve bytes before binary (unnessecary in some cases)
                 //         DS    0H */
-                
                 strcpy ( ASS_CARD._BUFCARD.METKA, /* пишем идентификатор в  */
                         SYM [i].NAME ); /* поле метки псевдоопера-*/
                 /* ции DC                 */
@@ -1796,9 +1804,9 @@ int OEN2 ()
                 //     ltoa ( VALUE (SYM [i].INIT),     /* часть операнда псевдо- */
                 //         &RAB [0], 10) ); /* операции,              */
                 //let's do that in Unix!
-                long int val = VALUE(SYM[i].INIT);
+               // long int val = VALUE(SYM[i].INIT);
                 //printf("%d",val);
-                strcat(ASS_CARD._BUFCARD.OPERAND, gcvt(val, 10, &RAB[0]));
+                strcat(ASS_CARD._BUFCARD.OPERAND, gcvt(VALUE(SYM[i].INIT), 10, &RAB[0]));
                 ASS_CARD._BUFCARD.OPERAND [ strlen /* замыкающий апостроф    */
                                            ( ASS_CARD._BUFCARD.OPERAND ) ] = '\''; /*          и             */
                 
@@ -1990,30 +1998,33 @@ int OPR2 ()
     FORM ();                                  /* форматируем оператор   */
     /* ПЛ1 - "начало процедур-*/
     /* ного блока"            */
-    while ( FORMT [0][i] != '\x0' )
+   
+    while ( FORMT [0][i] != '\x0' ) {
         ASS_CARD._BUFCARD.METKA [i++] = FORMT [0][i]; /* нулевой терм используем*/
+      //  printf("%d", FORMT [0][i]);
+    }
     /* как метку в START-псев-*/
     /* дооперации Ассемблера  */
     
     memcpy ( ASS_CARD._BUFCARD.OPERAC, "START", 5 );/* достраиваем код и опе- */
     memcpy ( ASS_CARD._BUFCARD.OPERAND, "0", 1 ); /* ранды  в  START-псевдо-*/
    // memcpy ( ASS_CARD._BUFCARD.COMM,          /* операции Ассемблера    */
-     //       "Начало программы", 16 );
+     //      "Начало \n", 16 );
     ZKARD ();                                 /* запоминаем карту Ассем-*/
     /* блера                  */
     
     memcpy ( ASS_CARD._BUFCARD.OPERAC, "BALR", 4 ); /* формируем BALR-операцию*/
     memcpy ( ASS_CARD._BUFCARD.OPERAND,       /* Ассемблера             */
             "@RBASE,0", 8 );
-  //  memcpy ( ASS_CARD._BUFCARD.COMM,
-    //        "Загрузить регистр базы", 22 );
+  // memcpy ( ASS_CARD._BUFCARD.COMM,
+    //       "load base \n", 9 );
     ZKARD ();                                 /* и запоминаем ее        */
     
     memcpy ( ASS_CARD._BUFCARD.OPERAC, "USING", 5 );/* формируем USING-псевдо-*/
     memcpy ( ASS_CARD._BUFCARD.OPERAND,       /* операцию Ассемблера    */
             "*,@RBASE", 8 );
   //  memcpy ( ASS_CARD._BUFCARD.COMM,
-    //        "Назначить регистр базой", 23 );
+    //        "\n", 23 );
     ZKARD ();                                 /* и запоминаем ее        */
     
     return 0;                                 /* завершить подпрограмму */
@@ -2040,15 +2051,17 @@ int PRO2 ()                                       /*прогр.формируе�
     if ( (fp = fopen ( NFIL, "wt" )) == NULL ) /*при неудачн.открыт.ф-ла */
         return (7);                       /* сообщение об ошибке    */
     
-    else                                      /*иначе:                  */
-        //fwrite (ASSTXT, 80, IASSTXT, fp); /* формируем тело об.файла*/
+    else    {                                /*иначе:                  */
+           /* формируем тело об.файла*/
         
         for(int assi=0;assi<MAXLTXT;assi++)
-        {
-            ASSTXT[assi][78]='\n';
-            fprintf(fp, "%s",ASSTXT[assi]);
-            printf("%s",ASSTXT[assi]);
-        }
+      {
+           ASSTXT[assi][78]='\n';
+      // fprintf(fp, "%s",ASSTXT[assi]);
+     //   printf("%s",ASSTXT[assi]);
+       }
+           fwrite (ASSTXT, 80, IASSTXT, fp); 
+    }
     fclose ( fp );                            /*закрываем об'ектный файл*/
     return ( 0 );                             /*завершить полдпрограмму */
 }
@@ -2261,7 +2274,9 @@ int main (int argc, char **argv )
             for ( NISXTXT = 0; NISXTXT <= MAXNISXTXT; NISXTXT++ )
             {
                 memset(ISXTXT[NISXTXT], 0, 80*sizeof(char));
-                if ( fgets(ISXTXT[NISXTXT], 80, fp) == NULL )//!fread ( ISXTXT [NISXTXT], 80, 1, fp ) )
+               // if (!fread ( ISXTXT [NISXTXT], 80, 1, fp ) )
+                if ( fgets(ISXTXT[NISXTXT], 80, fp) == NULL )
+                //if (!fread ( ISXTXT [NISXTXT], 80, 1, fp ) )
                 {
                     if ( feof ( fp ) ) /* в конце файла идем на  */
                         goto main1; /* метку  main1           */
